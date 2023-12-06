@@ -11,9 +11,9 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-const { getInfo } = require('./youtube');
+const { getInfo, download } = require('./youtube');
 app.get('/api/getInfo', getInfo);
-
+app.get('/api/download', download);
 
 const PORT=process.env.PORT ||3000;
 app.listen(PORT, () => {

@@ -20,7 +20,8 @@
     <div id="meuComponente"></div>
     <script type="text/babel">
         const FormYoutube = (props) => {
-            const [formInfo, setFormInfo] = React.useState({ url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", info: null });
+            const INITIAL_STATE={ url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", info: null };
+            const [formInfo, setFormInfo] = React.useState(INITIAL_STATE);
             const handleForm = () => {
                 fetch(`/api/getInfo?url=${formInfo.url}`)
                     .then(r => r.json())
@@ -37,24 +38,21 @@
                             <div id="emailHelp" className="form-text">We'll never share your email with
                                 anyone else.</div>
                         </div>
-                        <div className="mb-5">
+                        <div className="mb-3">
                             <button type="button" class="btn btn-primary" onClick={handleForm}>Button</button>
-                            <button type="reset" class="btn btn-primary mr-3" >Reset</button>
+                            <button type="reset" class="btn btn-danger ml-3" onClick={()=>setFormInfo(INITIAL_STATE)} >Reset</button>
                         </div>
                         <div className="row">
                             <div className="mb-5 col">
                                 {
                                     formInfo.info && formInfo.info.formats.map(item => (
                                         <div>
-                                            {<a href={item.url} mimeType={item.mimeType.split(";")[0]} download={`video.${item.container}`} >{item.mimeType}</a>}
+                                            {<a href={`/api/download?format=${item.itag}&url=${formInfo.info.videoDetails.video_url}`}  >{item.itag} {item.mimeType}</a>}
                                         </div>))
                                 }
 
                             </div>
-                            <div className="mb-5 col">
-                                {formInfo.info && <iframe src={formInfo.info.formats[0].url}/>}
 
-                            </div>
                         </div>
                     </form>
                 </div>
