@@ -9,7 +9,8 @@ const getInfo = (req, res, next) => {
     .then(info=>{
         res.json(info);
     })
-    
+    .catch(err=>res.send(err))
+   
 }
 
 

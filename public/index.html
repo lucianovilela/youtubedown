@@ -20,11 +20,11 @@
     <div id="meuComponente"></div>
     <script type="text/babel">
         const FormYoutube = (props) => {
-            const [ formInfo, setFormInfo ] = React.useState({url:null, info:null});
-            const handleForm=()=>{
+            const [formInfo, setFormInfo] = React.useState({ url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", info: null });
+            const handleForm = () => {
                 fetch(`/api/getInfo?url=${formInfo.url}`)
-                .then(r=>r.json())
-                .then(r=>setFormInfo({...formInfo, info:r}))
+                    .then(r => r.json())
+                    .then(r => setFormInfo({ ...formInfo, info: r }))
             }
             return (
                 <div>
@@ -33,21 +33,29 @@
                             <label for="urlYoutube" className="form-label">URL</label>
                             <input type="url" className="form-control" id="urlYoutube"
                                 aria-describedby="emailHelp" value={formInfo.url}
-                                onChange={(event)=>{setFormInfo({...formInfo, url:event.target.value})}} />
+                                onChange={(event) => { setFormInfo({ ...formInfo, url: event.target.value }) }} />
                             <div id="emailHelp" className="form-text">We'll never share your email with
                                 anyone else.</div>
                         </div>
                         <div className="mb-5">
                             <button type="button" class="btn btn-primary" onClick={handleForm}>Button</button>
-                            <button type="reset" class="btn btn-primary">Reset</button>
+                            <button type="reset" class="btn btn-primary mr-3" >Reset</button>
                         </div>
-                        <div className="mb-5">
-                            {
-                                formInfo.info && formInfo.info.formats.map(item=>(<div>{JSON.stringify(item.url)}&nbsp;</div>))
-                            }
+                        <div className="row">
+                            <div className="mb-5 col">
+                                {
+                                    formInfo.info && formInfo.info.formats.map(item => (
+                                        <div>
+                                            {<a href={item.url} mimeType={item.mimeType.split(";")[0]} download={`video.${item.container}`} >{item.mimeType}</a>}
+                                        </div>))
+                                }
 
+                            </div>
+                            <div className="mb-5 col">
+                                {formInfo.info && <iframe src={formInfo.info.formats[0].url}/>}
+
+                            </div>
                         </div>
-
                     </form>
                 </div>
             );
