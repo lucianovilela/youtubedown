@@ -23,6 +23,46 @@
 
     <div id="meuComponente"></div>
     <script type="text/babel">
+        function humanizarTamanhoArquivo(bytes) {
+            const unidades = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes == 0) return '0 Byte';
+            if (isNaN(bytes)) return 'indefinido'
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + unidades[i];
+        }
+
+        const ShowInfo = ({ formInfo }) => {
+            return (
+                <div>
+                    <div class="text-center">
+                        {formInfo.info && formInfo.info.videoDetails.title}    
+                    </div>
+                    {
+                        formInfo.info && formInfo.info.formats.map(item => (
+
+                            <div className="row">
+                                <div class="col">
+                                    <a href={`/api/download?format=${item.itag}&start=${formInfo.start}&end=${formInfo.end}&url=${formInfo.info.videoDetails.video_url}`}  >{item.container} {item.quality} {item.qualityLabel}</a>
+                                </div>
+                                <div class="col">
+                                    {item.hasAudio && <span className="material-symbols-outlined">
+                                        music_note
+                                    </span>}
+                                    {item.hasVideo && <span className="material-symbols-outlined">
+                                        slideshow
+                                    </span>}
+                                </div>
+                                <div class="col">
+                                    <span>{humanizarTamanhoArquivo(item.contentLength)}</span>
+                                </div>
+                            </div>
+                        )
+                        )}
+                </div>
+            )
+
+        }
+
         const FormYoutube = (props) => {
             const INITIAL_STATE = { url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", info: null, start: "00:00", end: "00:00" };
             const [formInfo, setFormInfo] = React.useState(INITIAL_STATE);
@@ -50,24 +90,12 @@
                                 value={formInfo.end} />
                         </div>
                         <div className="mb-3">
-                            <button type="button" class="btn btn-primary" onClick={handleForm}>Button</button>
+                            <button type="button" class="btn btn-primary" onClick={handleForm}>Consulta</button>
                             <button type="reset" class="btn btn-danger ml-3" onClick={() => setFormInfo(INITIAL_STATE)} >Reset</button>
                         </div>
                         <div className="row">
                             <div className="mb-5 col">
-                                {
-                                    formInfo.info && formInfo.info.formats.map(item => (
-                                        <div>
-                                            {<a href={`/api/download?format=${item.itag}&start=${formInfo.start}&end=${formInfo.end}&url=${formInfo.info.videoDetails.video_url}`}  >{item.mimeType}</a>}
-                                            {item.hasAudio && <span className="material-symbols-outlined">
-                                                music_note
-                                            </span>}
-                                            {item.hasVideo && <span className="material-symbols-outlined">
-                                                slideshow
-                                            </span>}
-                                        </div>))
-                                }
-
+                                <ShowInfo formInfo={formInfo} />
                             </div>
 
                         </div>
