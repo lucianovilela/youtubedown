@@ -1,19 +1,23 @@
-FROM alpine:latest as builder
+# Baseado na imagem oficial do Node.js
+FROM node:18
 
-RUN apk add --update nodejs npm bash nginx
-COPY nginx.conf /etc/nginx/conf.d/
+# Define o diretório de trabalho
 WORKDIR /app
-COPY . .
+
+# Copia o package.json e o package-lock.json
+COPY package*.json ./
+
+# Instala as dependências do Node.js
 RUN npm install
 
+# Copia o restante dos arquivos da aplicação
+COPY . .
 
+# Instala o Nginx
+RUN apt-get update && apt-get install -y nginx
 
-## Remova o arquivo de configuração padrão do Nginx
-##RUN rm /etc/nginx/conf.d/default.conf
+# Copia o arquivo de configuração do Nginx
+COPY nginx.conf /etc/nginx/sites-available/default
 
-## Substitua pelo arquivo de configuração personalizado
-COPY nginx.conf /etc/nginx/conf.d/
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# Inicia o Node.js e o Nginx
+CMD service nginx start && npm start
