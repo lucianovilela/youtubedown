@@ -10,8 +10,15 @@ app.use(logger('dev'));
 
 app.use(express.static('public'));
 
+//write a config to use pug view
+app.set('view engine', 'pug');
+app.set('views', './__views');
+
+
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+
+    res.render('index2', {time: new Date()});
+    //res.sendFile(__dirname + '/index.html');
 });
 
 const { getInfo, download } = require('./youtube');
